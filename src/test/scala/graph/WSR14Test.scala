@@ -143,7 +143,7 @@ class WSR14Test extends FunSuite {
     @inline def t(n: Int): Long = {
       val σ = SkillState.create;
       for (i ← 0 until n)
-        σ.Node("black", new HashSet[Node])
+        σ.Node("black", σ.makeRefSet(σ.Node))
 
       // create random colors
       for (n ← σ.Node.all)
@@ -171,7 +171,7 @@ class WSR14Test extends FunSuite {
     @inline def t(n: Int): Long = {
       val σ = SkillState.create;
       for (i ← 0 until n)
-        σ.Node("black", new HashSet[Node])
+        σ.Node("black", σ.makeRefSet(σ.Node))
 
       // create random colors
       for (n ← σ.Node.all)
@@ -195,13 +195,13 @@ class WSR14Test extends FunSuite {
   }
 
   def read = {
-    val f = tmpFile("wsr.read");
 
     @inline def t(n: Int): Long = {
+      val f = tmpFile("wsr.read");
       locally {
         val σ = SkillState.create;
         for (i ← 0 until n)
-          σ.Node("black", new HashSet[Node])
+          σ.Node("black", σ.makeRefSet(σ.Node))
 
         // create random colors
         for (n ← σ.Node.all)
@@ -230,13 +230,13 @@ class WSR14Test extends FunSuite {
   }
 
   def append = {
-    val f = tmpFile("wsr.append");
 
     @inline def t(n: Int): Long = {
+      val f = tmpFile("wsr.append");
       locally {
         val σ = SkillState.create;
         for (i ← 0 until n)
-          σ.Node("black", new HashSet[Node])
+          σ.Node("black", σ.makeRefSet(σ.Node))
 
         // create random colors
         for (n ← σ.Node.all)
@@ -261,7 +261,7 @@ class WSR14Test extends FunSuite {
         // fix, because pool access is not yet an indexed seq or something like that
         val nodes = σ.Node.all.toArray
         for (i ← 0 until n) {
-          val n = σ.Node("orange", new HashSet[Node])
+          val n = σ.Node("orange", σ.makeRefSet(σ.Node))
           for (j ← 0 until 100)
             n.edges.add(nodes(Random.nextInt(nodes.length)));
         }

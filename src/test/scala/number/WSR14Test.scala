@@ -42,9 +42,9 @@ class WSR14Test extends CommonTest {
   }
 
   test("linear") {
-    val f = tmpFile("wsr");
 
     @inline def t(n: Int) {
+      val f = tmpFile("wsr");
       val σ = SkillState.create;
       for (i ← 0 to n)
         σ.Number(i)
@@ -64,9 +64,8 @@ class WSR14Test extends CommonTest {
   }
 
   test("randomize") {
-    val f = tmpFile("wsr");
 
-    @inline def make(n: Int) {
+    @inline def make(f: Path, n: Int) {
       val σ = SkillState.create;
       for (i ← 0 to n)
         σ.Number(0)
@@ -74,10 +73,11 @@ class WSR14Test extends CommonTest {
     }
 
     @inline def t(f: Path, n: Int) {
+      val out = tmpFile("wsr");
       val σ = SkillState.read(f);
       for (n ← σ.Number.all)
         n.number = Random.nextLong
-      σ.write(f)
+      σ.write(out)
     }
 
     // produces nice latex output
@@ -86,7 +86,8 @@ class WSR14Test extends CommonTest {
       print("randomize")
       for (n ← counts) {
         print(" & ")
-        make(n)
+        val f = tmpFile("wsr");
+        make(f, n)
         averageOut(t(f, n))
       }
       print("\\\\\n")
@@ -94,16 +95,15 @@ class WSR14Test extends CommonTest {
   }
 
   test("sort") {
-    val f = tmpFile("wsr_random");
-    val out = tmpFile("wsr_sorted");
-    @inline def make(n: Int) {
+    @inline def make(f: Path, n: Int) {
       val σ = SkillState.create;
       for (i ← 0 to n)
         σ.Number(Random.nextLong)
       σ.write(f)
     }
 
-    @inline def t(n: Int) {
+    @inline def t(f: Path, n: Int) {
+      val out = tmpFile("wsr_sorted");
       val σ = SkillState.read(f);
       σ.Number.all.toBuffer.sortBy[Long](_.number)
       σ.write(out)
@@ -115,8 +115,9 @@ class WSR14Test extends CommonTest {
       print("sort")
       for (n ← counts) {
         print(" & ")
-        make(n)
-        averageOut(t(n))
+        val f = tmpFile("wsr_random");
+        make(f, n)
+        averageOut(t(f, n))
       }
       print("\\\\\n")
     }
